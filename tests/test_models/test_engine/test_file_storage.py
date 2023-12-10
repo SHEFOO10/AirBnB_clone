@@ -57,7 +57,6 @@ class Test_filestorage(unittest.TestCase):
         storage.save()
         self.assertTrue(os.path.exists('file.json'))
 
-
     def test_reload(self):
         """
         test reload function
@@ -66,8 +65,22 @@ class Test_filestorage(unittest.TestCase):
         instance = base_model.BaseModel()
         instance.save()
         storage.reload()
-        [self.assertTrue(obj.id == instance.id) for obj in storage.all().values()]
+        [self.assertTrue(obj.id == instance.id)
+         for obj in storage.all().values()]
 
     def test_storage_var_isloaded(self):
         """ test if test variable is Not None and loaded correctlly """
         self.assertIsInstance(storage, FileStorage)
+
+    def test_path_type(self):
+        """ test if the path is not str """
+        self.assertIsInstance(storage._FileStorage__file_path, str)
+
+    def test_key_format(self):
+        """
+        test if key format in storage is valid
+        example: <classname>.<id>
+        """
+        new_instance = base_model.BaseModel()
+        [self.assertEqual(key, 'BaseModel.' + new_instance.id)
+         for key in storage.all().keys()]
