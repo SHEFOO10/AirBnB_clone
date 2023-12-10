@@ -92,3 +92,9 @@ class Test_filestorage(unittest.TestCase):
         with open(storage._FileStorage__file_path, 'r') as f:
             with self.assertRaises(ValueError):
                 storage.reload()
+
+    def test_data_saved(self):
+        """ tests if data is saved into json correctlly """
+        new_instance = base_model.BaseModel()
+        new_instance.save()
+        self.assertNotEqual(os.path.getsize('file.json'), 0)
