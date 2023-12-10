@@ -6,15 +6,28 @@ from datetime import datetime
 
 class BaseModel():
     """ defines all common attributes/methods for other classes """
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """ Initiate BaseModel object """
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        if kwargs is None or kwargs == {} or len(kwargs) == 0:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+        else:
+            self.update(**kwargs)
 
     def __str__(self):
         """ return the string representation of the class """
         return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
+
+    def update(self, **kwargs):
+        """ update object with given dictionary """
+        del kwargs['__class__']
+        for attribute, value in kwargs.items():
+            if attribute == 'created_at' or attribute == 'updated_at':
+                setattr(self, attribute,
+                        datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f"))
+            else:
+                setattr(self, attribute, value)
 
     def save(self):
         """ save the object """

@@ -15,6 +15,20 @@ class test_basemodel(unittest.TestCase):
         self.assertIsInstance(instance.created_at, datetime)
         self.assertIsInstance(instance.updated_at, datetime)
 
+    def test_instanciation_with_args(self):
+        """ make new instance with args """
+        first_instance = BaseModel()
+        second_instance = BaseModel(**first_instance.to_dict())
+        self.assertEqual(first_instance.id, second_instance.id)
+        self.assertEqual(first_instance.updated_at, second_instance.updated_at)
+        self.assertEqual(first_instance.created_at, second_instance.created_at)
+        self.assertFalse(second_instance.__class__ == str)
+
+    def test_instanciation_with_invalid_args(self):
+        """ make new instance with invalid args """
+        with self.assertRaises(TypeError):
+            instance = BaseModel(**{1: 1})
+
     def test_print_basemodel(self):
         """
         check if str representation of basemodel
