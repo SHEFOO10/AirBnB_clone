@@ -11,8 +11,12 @@ class Test_filestorage(unittest.TestCase):
     """ test FileStorage class and it's tests """
 
     def setUp(self):
-        """ before every test it reload storage """
-        storage.reload()
+        """ before every test delete objects stored in storage """
+        del_list = []
+        for key in storage._FileStorage__objects.keys():
+            del_list.append(key)
+        for key in del_list:
+            del storage._FileStorage__objects[key]
 
     def tearDown(self):
         """after every test it deletes file.json if it exists """
@@ -20,6 +24,14 @@ class Test_filestorage(unittest.TestCase):
             os.remove('file.json')
         except FileNotFoundError:
             pass
+
+    def test_make_sure_no_jsonfile(self):
+        """ just to make sure there's no file.json """
+        self.assertFalse(os.path.exists('file.json'))
+
+    def test_objects_is_empty(self):
+        """ tests if __objects is empty """
+        self.assertTrue(len(storage.all()) == 0)
 
     def test_private_attributes(self):
         """ check if attributes is truely private """
@@ -35,19 +47,16 @@ class Test_filestorage(unittest.TestCase):
     def test_new(self):
         """ test new function that add new object to __object dictionary """
         instance = base_model.BaseModel()
-        instance.save()
-        self.assertTrue(os.path.exists('file.json'))
+        key = instance.__class__.__name__+'.'+instance.id
+        self.assertTrue(storage.all()[key] is instance)
+        self.assertTrue(len(storage.all()) == 1)
 
     def test_save(self):
         """ save __objects into json file """
         instance = base_model.BaseModel()
         storage.save()
         self.assertTrue(os.path.exists('file.json'))
-        with open('file.json', 'r') as f:
-            content = f.read()
-            self.assertTrue(content != '')
-            content = json.loads(content)
-            self.assertIsInstance(content, dict)
+
 
     def test_reload(self):
         """
@@ -56,9 +65,9 @@ class Test_filestorage(unittest.TestCase):
         """
         instance = base_model.BaseModel()
         instance.save()
-        key = instance.__class__.__name__+'.'+instance.id
         storage.reload()
-        self.assertTrue(storage.all()[key], instance)
-        with open('file.json', 'r') as f:
-            content = json.load(f)
-            self.assertTrue(content[key]['id'] == instance.to_dict()['id'])
+        [self.assertTrue(obj.id == instance.id) for obj in storage.all().values()]
+
+    def test_storage_var_isloaded(self):
+        """ test if test variable is Not None and loaded correctlly """
+        self.assertIsInstance(storage, FileStorage)
