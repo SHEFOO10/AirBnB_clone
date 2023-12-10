@@ -33,6 +33,13 @@ class Test_filestorage(unittest.TestCase):
         """ tests if __objects is empty """
         self.assertTrue(len(storage.all()) == 0)
 
+    def test_instanciation_with_new_and_old(self):
+        """ loading from json file and creating new object """
+        old_instance = base_model.BaseModel()
+        old_instance.save()
+        new_instance = base_model.BaseModel(**old_instance.to_dict())
+        self.assertTrue(os.path.getsize('file.json') > 0)
+
     def test_private_attributes(self):
         """ check if attributes is truely private """
         with self.assertRaises(AttributeError):
