@@ -37,5 +37,5 @@ class FileStorage():
                 key: classes[dictionary['__class__']](**dictionary)
                 for key, dictionary in content.items()
                 }
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            self.__objects = {}
+        except (FileNotFoundError):
+            pass

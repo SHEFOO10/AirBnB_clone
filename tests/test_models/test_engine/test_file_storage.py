@@ -84,3 +84,11 @@ class Test_filestorage(unittest.TestCase):
         new_instance = base_model.BaseModel()
         [self.assertEqual(key, 'BaseModel.' + new_instance.id)
          for key in storage.all().keys()]
+
+    def test_reload_empty_jsonfile(self):
+        """ test reload empty json file """
+        with open(storage._FileStorage__file_path, 'w') as f:
+            pass
+        with open(storage._FileStorage__file_path, 'r') as f:
+            with self.assertRaises(ValueError):
+                storage.reload()
