@@ -42,6 +42,7 @@ class Test_filestorage(unittest.TestCase):
 
     def test_all(self):
         """ test all function that returns all objects in FileStorage """
+        instance = base_model.BaseModel()
         self.assertIsInstance(storage.all(), dict)
 
     def test_new(self):
@@ -103,3 +104,10 @@ class Test_filestorage(unittest.TestCase):
         """ make sure creating object won't affect in creating json file """
         new_instance = base_model.BaseModel()
         self.assertFalse(os.path.exists('file.json'))
+
+    def test_reload_from_nothing(self):
+        """ 
+        test storage reload which run pass
+        if is there error in reloading
+        """
+        self.assertEqual(storage.reload(), None)
