@@ -98,3 +98,8 @@ class Test_filestorage(unittest.TestCase):
         new_instance = base_model.BaseModel()
         new_instance.save()
         self.assertNotEqual(os.path.getsize('file.json'), 0)
+
+    def test_object_created_but_not_saved(self):
+        """ make sure creating object won't affect in creating json file """
+        new_instance = base_model.BaseModel()
+        self.assertFalse(os.path.exists('file.json'))
