@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """ this file holds Test_filestorage class to test filestorage functions """
 import unittest
-from models.engine.file_storage import FileStorage
-from models import storage, base_model
+from models.base_model import BaseModel
+from models import storage
 import os
 import json
 
@@ -35,9 +35,9 @@ class Test_filestorage(unittest.TestCase):
 
     def test_instanciation_with_new_and_old(self):
         """ loading from json file and creating new object """
-        old_instance = base_model.BaseModel()
+        old_instance = BaseModel()
         old_instance.save()
-        new_instance = base_model.BaseModel(**old_instance.to_dict())
+        new_instance = BaseModel(**old_instance.to_dict())
         self.assertTrue(os.path.getsize('file.json') > 0)
 
     def test_private_attributes(self):
@@ -49,19 +49,19 @@ class Test_filestorage(unittest.TestCase):
 
     def test_all(self):
         """ test all function that returns all objects in FileStorage """
-        instance = base_model.BaseModel()
+        instance = BaseModel()
         self.assertIsInstance(storage.all(), dict)
 
     def test_new(self):
         """ test new function that add new object to __object dictionary """
-        instance = base_model.BaseModel()
+        instance = BaseModel()
         key = instance.__class__.__name__+'.'+instance.id
         self.assertTrue(storage.all()[key] is instance)
         self.assertTrue(len(storage.all()) == 1)
 
     def test_save(self):
         """ save __objects into json file """
-        instance = base_model.BaseModel()
+        instance = BaseModel()
         storage.save()
         self.assertTrue(os.path.exists('file.json'))
 
@@ -70,7 +70,7 @@ class Test_filestorage(unittest.TestCase):
         test reload function
             that deserializes the json file to __objects
         """
-        instance = base_model.BaseModel()
+        instance = BaseModel()
         instance.save()
         storage.reload()
         [self.assertTrue(obj.id == instance.id)
@@ -78,6 +78,7 @@ class Test_filestorage(unittest.TestCase):
 
     def test_storage_var_isloaded(self):
         """ test if test variable is Not None and loaded correctlly """
+        from models.engine.file_storage import FileStorage
         self.assertIsInstance(storage, FileStorage)
 
     def test_path_type(self):
@@ -89,7 +90,7 @@ class Test_filestorage(unittest.TestCase):
         test if key format in storage is valid
         example: <classname>.<id>
         """
-        new_instance = base_model.BaseModel()
+        new_instance = BaseModel()
         [self.assertEqual(key, 'BaseModel.' + new_instance.id)
          for key in storage.all().keys()]
 
@@ -103,13 +104,13 @@ class Test_filestorage(unittest.TestCase):
 
     def test_data_saved(self):
         """ tests if data is saved into json correctlly """
-        new_instance = base_model.BaseModel()
+        new_instance = BaseModel()
         new_instance.save()
         self.assertNotEqual(os.path.getsize('file.json'), 0)
 
     def test_object_created_but_not_saved(self):
         """ make sure creating object won't affect in creating json file """
-        new_instance = base_model.BaseModel()
+        new_instance = BaseModel()
         self.assertFalse(os.path.exists('file.json'))
 
     def test_reload_from_nothing(self):
