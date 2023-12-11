@@ -4,7 +4,7 @@ from tests.test_models.test_base_model import test_basemodel
 from models.review import Review
 
 
-class test_ReviewModel(self):
+class test_ReviewModel(test_basemodel):
     """ test review model """
     def __init__(self, *args, **kwargs):
         """ Initiate Review Test Model """
