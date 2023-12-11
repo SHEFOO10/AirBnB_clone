@@ -135,6 +135,11 @@ class HBNBCommand(cmd.Cmd):
                 self.do_show(ret[0]+' '+ret[1][5:].strip('()"'))
             if ret[1].startswith('.destroy'):
                 self.do_destroy(ret[0]+' '+ret[1][8:].strip('()"'))
+            if ret[1].startswith('.update'):
+                args_list = [ret[0]]
+                args_list += [arg.strip('"')
+                              for arg in ret[1][7:].strip('()').split(', ')]
+                self.do_update(' '.join(args_list))
             return (None, None, '')
         return ret
 
