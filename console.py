@@ -117,12 +117,20 @@ class HBNBCommand(cmd.Cmd):
         """ test if class have instances """
         storage.all()[classname+'.'+obj_id]
 
+    def count_instances(self, classname):
+        """ count instances of certain class """
+        return len([obj for obj in storage.all().values()
+                    if obj.__class__.__name__ == classname])
+
     def parseline(self, line):
         from re import match
         ret = cmd.Cmd.parseline(self, line)
-        regex = match(r'\w+\.all\(\)', ret[2])
+        regex = match(r'\w+\.\w+\(\)', ret[2])
         if regex and ret[0] in HBNBCommand.classes:
-            self.do_all(ret[0])
+            if ret[1] == '.all()':
+                self.do_all(ret[0])
+            if ret[1] == '.count()':
+                print(self.count_instances(ret[0]))
             return (None, None, '')
         return ret
 
