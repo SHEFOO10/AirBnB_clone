@@ -125,15 +125,14 @@ class HBNBCommand(cmd.Cmd):
     def parseline(self, line):
         from re import match, search
         ret = cmd.Cmd.parseline(self, line)
-        regex = match(r'\w+\.\w+\(\)', ret[2])
+        regex = match(r'\w+\.\w+\((.+)?\)', ret[2])
         if regex and ret[0] in HBNBCommand.classes:
             if ret[1] == '.all()':
                 self.do_all(ret[0])
             if ret[1] == '.count()':
                 print(self.count_instances(ret[0]))
-            return (None, None, '')
-        if match(r'\w+\.\w+\([0-9a-z-]+\)', ret[2]) and ret[0] in HBNBCommand.classes:
-            self.do_show(ret[0]+' '+search(r"[0-9a-z]+\-([0-9a-z]+(\-)?)+", ret[2]).group())
+            if ret[1].startswith('.show'):
+                self.do_show(ret[0]+' '+ret[1][5:].strip('()"'))
             return (None, None, '')
         return ret
 
