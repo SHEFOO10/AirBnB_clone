@@ -52,8 +52,11 @@ class HBNBCommand(cmd.Cmd):
                 print(all_models)
         else:
             if self.return_class(line.strip()) is not None:
-                all_specific_models = [obj.__str__() for obj in storage.all().values()
-                      if obj.__class__.__name__ == line.strip()]
+                all_specific_models = [
+                    obj.__str__()
+                    for obj in storage.all().values()
+                    if obj.__class__.__name__ == line.strip()
+                    ]
                 if all_specific_models != []:
                     print(all_specific_models)
 
@@ -85,7 +88,8 @@ class HBNBCommand(cmd.Cmd):
             try:
                 if instance is not None:
                     self.have_instances(arguments[0], arguments[1].strip('"'))
-                    return '{}.{}'.format(arguments[0], arguments[1].strip('"'))
+                    return '{}.{}'.format(arguments[0],
+                                          arguments[1].strip('"'))
             except KeyError:
                 print("** no instance found **")
 
