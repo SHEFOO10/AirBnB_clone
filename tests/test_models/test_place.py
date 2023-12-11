@@ -27,7 +27,7 @@ class test_PlaceModel(test_basemodel):
         instance = self.value
         self.assertIsInstance(instance.name, str)
 
-    def test_description_is_present(test):
+    def test_description_is_present(self):
         """ test if description is present """
         instance = self.value
         self.assertIsInstance(instance.description, str)
