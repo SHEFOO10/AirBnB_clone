@@ -62,10 +62,16 @@ class HBNBCommand(cmd.Cmd):
 
     def return_class(self, classname):
         """ check if class exists and return it """
-        from models import base_model, user
+        from models import base_model, user, city, place, review, state
+        from models import amenity
         classes = {
             'BaseModel': base_model.BaseModel,
-            'User': user.User
+            'User': user.User,
+            'City': city.City,
+            'Place': place.Place,
+            'Review': review.Review,
+            'State': state.State,
+            'Amenity': amenity.Amenity
         }
         try:
             return classes[classname]
