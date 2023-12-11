@@ -26,9 +26,10 @@ class FileStorage():
 
     def reload(self):
         """  deserializes the JSON file to __objects """
-        from models.base_model import BaseModel
+        from models import base_model, user
         classes = {
-            'BaseModel': BaseModel
+            'BaseModel': base_model.BaseModel,
+            'User': user.User
         }
         try:
             with open(self.__file_path, 'r') as file:
