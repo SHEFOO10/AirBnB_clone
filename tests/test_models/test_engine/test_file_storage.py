@@ -47,6 +47,10 @@ class Test_filestorage(unittest.TestCase):
         with self.assertRaises(AttributeError):
             storage.__objects
 
+    def test_objects_type(self):
+        """ check objects type """
+        self.assertIsInstance(storage._FileStorage__objects, dict)
+
     def test_all(self):
         """ test all function that returns all objects in FileStorage """
         instance = BaseModel()
