@@ -25,9 +25,11 @@ class HBNBCommand(cmd.Cmd):
         if line == '':
             print('** class name missing **')
         else:
-            new_instance = self.return_class(line.split()[0].strip('"'))()
-            new_instance.save()
-            print(new_instance.id)
+            new_instance = self.return_class(line.split()[0].strip('"'))
+            if new_instance is not None:
+                new_instance = new_instance()
+                new_instance.save()
+                print(new_instance.id)
 
     def do_show(self, line):
         """ Show the object """
@@ -35,7 +37,7 @@ class HBNBCommand(cmd.Cmd):
         if key is not None:
             print(storage.all()[key])
 
-    def do_destory(self, line):
+    def do_destroy(self, line):
         """ destory the object with it's id """
         key = self.validate_line(line)
         if key is not None:
@@ -45,11 +47,15 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, line):
         """ return all object as list of strings """
         if line.strip() == '':
-            print([obj.__str__() for obj in storage.all().values()])
+            all_models = [obj.__str__() for obj in storage.all().values()]
+            if all_models != []:
+                print(all_models)
         else:
             if self.return_class(line.strip()) is not None:
-                print([obj.__str__() for obj in storage.all().values()
-                      if obj.__class__.__name__ == line.strip()])
+                all_specific_models = [obj.__str__() for obj in storage.all().values()
+                      if obj.__class__.__name__ == line.strip()]
+                if all_specific_models != []:
+                    print(all_specific_models)
 
     def return_class(self, classname):
         """ check if class exists and return it """
@@ -69,15 +75,16 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         arguments = line.split()
-        instance = self.return_class(arguments[0].strip('"'))()
+        instance = self.return_class(arguments[0].strip('"'))
         if len(arguments) == 1:
             (print("** instance id missing **")
                 if instance is not None
                 else '')
         elif len(arguments) >= 2:
             try:
-                self.have_instances(arguments[0], arguments[1])
-                return f'{arguments[0]}.{arguments[1]}'
+                if instance is not None:
+                    self.have_instances(arguments[0], arguments[1].strip('"'))
+                    return '{}.{}'.format(arguments[0], arguments[1].strip('"'))
             except KeyError:
                 print("** no instance found **")
 

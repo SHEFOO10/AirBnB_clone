@@ -45,10 +45,15 @@ class test_basemodel(unittest.TestCase):
 
     def test_save(self):
         """ test save function """
+        import os
+        import json
         instance = BaseModel()
-        old_update_at = str(instance.updated_at)
         instance.save()
-        self.assertNotEqual(old_update_at, str(instance.updated_at))
+        key = f"BaseModel.{instance.id}"
+        self.assertTrue(os.path.exists('file.json'))
+        with open('file.json', 'r') as f:
+            j = json.load(f)
+            self.assertEqual(j[key], instance.to_dict())
 
     def test_todict(self):
         """ test converting object to dictionary """

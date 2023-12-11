@@ -65,8 +65,7 @@ class Test_filestorage(unittest.TestCase):
 
     def test_save(self):
         """ save __objects into json file """
-        instance = BaseModel()
-        storage.save()
+        BaseModel().save()
         self.assertTrue(os.path.exists('file.json'))
 
     def test_reload(self):
@@ -118,7 +117,7 @@ class Test_filestorage(unittest.TestCase):
         self.assertFalse(os.path.exists('file.json'))
 
     def test_reload_from_nothing(self):
-        """ 
+        """
         test storage reload which run pass
         if is there error in reloading
         """
