@@ -1,12 +1,22 @@
 #!/usr/bin/python3
 """ Handle console class with it's commands """
 import cmd
-from models import storage
+from models import base_model, user, city, place, review, state
+from models import amenity, storage
 
 
 class HBNBCommand(cmd.Cmd):
     """ HBNBCommand to handle commmands """
     prompt = '(hbnb) '
+    classes = {
+        'BaseModel': base_model.BaseModel,
+        'User': user.User,
+        'City': city.City,
+        'Place': place.Place,
+        'Review': review.Review,
+        'State': state.State,
+        'Amenity': amenity.Amenity
+    }
 
     def emptyline(self):
         """ prevent emtpy line function from make it's default behaviour """
@@ -62,19 +72,8 @@ class HBNBCommand(cmd.Cmd):
 
     def return_class(self, classname):
         """ check if class exists and return it """
-        from models import base_model, user, city, place, review, state
-        from models import amenity
-        classes = {
-            'BaseModel': base_model.BaseModel,
-            'User': user.User,
-            'City': city.City,
-            'Place': place.Place,
-            'Review': review.Review,
-            'State': state.State,
-            'Amenity': amenity.Amenity
-        }
         try:
-            return classes[classname]
+            return HBNBCommand.classes[classname]
         except KeyError:
             print("** class doesn't exist **")
 
@@ -117,6 +116,15 @@ class HBNBCommand(cmd.Cmd):
     def have_instances(self, classname, obj_id):
         """ test if class have instances """
         storage.all()[classname+'.'+obj_id]
+
+    def parseline(self, line):
+        from re import match
+        ret = cmd.Cmd.parseline(self, line)
+        regex = match(r'\w+\.all\(\)', ret[2])
+        if regex and ret[0] in HBNBCommand.classes:
+            self.do_all(ret[0])
+            return (None, None, '')
+        return ret
 
 
 if __name__ == '__main__':
