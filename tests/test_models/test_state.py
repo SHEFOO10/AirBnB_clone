@@ -8,7 +8,7 @@ class test_stateModel(test_basemodel):
     """ Test state Class """
     def __init__(self, *args, **kwargs):
         """ Initiate test_stateModel class """
-        super.init(*args, **kwargs)
+        super().init(*args, **kwargs)
         self.classname = 'State'
         self.value = State()
 
