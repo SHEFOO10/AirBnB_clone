@@ -133,6 +133,8 @@ class HBNBCommand(cmd.Cmd):
                 print(self.count_instances(ret[0]))
             if ret[1].startswith('.show'):
                 self.do_show(ret[0]+' '+ret[1][5:].strip('()"'))
+            if ret[1].startswith('.destroy'):
+                self.do_destroy(ret[0]+' '+ret[1][8:].strip('()"'))
             return (None, None, '')
         return ret
 
