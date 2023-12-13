@@ -102,8 +102,8 @@ class HBNBCommand(cmd.Cmd):
         """ Updates an instance based on the class name and id """
         key = self.validate_line(line)
         if key is not None:
-            arguments = line.split()
-            arguments_len = len(line.split()[2:])
+            arguments = line.split(' ')
+            arguments_len = len(line.split(' ')[2:])
             if arguments_len == 0:
                 print("** attribute name missing **")
             elif arguments_len == 1:
@@ -124,6 +124,7 @@ class HBNBCommand(cmd.Cmd):
 
     def parseline(self, line):
         from re import match, search
+        import json
         ret = cmd.Cmd.parseline(self, line)
         regex = match(r'\w+\.\w+\((.+)?\)', ret[2])
         if regex and ret[0] in HBNBCommand.classes:
@@ -136,10 +137,25 @@ class HBNBCommand(cmd.Cmd):
             if ret[1].startswith('.destroy'):
                 self.do_destroy(ret[0]+' '+ret[1][8:].strip('()"'))
             if ret[1].startswith('.update'):
-                args_list = [ret[0]]
-                args_list += [arg.strip('"')
-                              for arg in ret[1][7:].strip('()').split(', ')]
-                self.do_update(' '.join(args_list))
+                try:
+                    dictionary = ret[1][7:].strip('()').split(', ', 1)[1]
+                    dictionary = dictionary.replace('\'', '"')
+                    dictionary = json.loads(dictionary)
+                    dictionary.update({'__class__': ret[0]})
+                    instance = storage.all()[
+                        ret[0]+'.'+ret[1][7:].strip('()').split(', ')[0]
+                        ]
+                    instance.update(**dictionary)
+                    instance.save()
+                except (ValueError, KeyError):
+                    args_list = [ret[0]]
+                    args_list += [arg.strip('"')
+                                  for arg in ret[1][7:].strip('()').split(', ')
+                                  ]
+                    try:
+                        self.do_update(' '.join(args_list))
+                    except KeyError:
+                        pass
             return (None, None, '')
         return ret
 
